@@ -1,0 +1,72 @@
+# Target the official Red Hat EAP 7 OpenShift Image
+
+build:
+  enabled: false
+
+# 1. Move this to the ROOT level (outside of deploy)
+image:
+  name: "registry.redhat.io/jboss-eap-7/eap74-openjdk8-openshift-rhel7"
+  tag: "latest"
+
+
+deploy:
+  enabled: true
+  replicas: 1
+
+  isImageStream: false 
+  imagePullSecrets:
+    - name: "<your pull secret>"
+
+  # Create a shared volume to pass the downloaded WARs to EAP
+  volumes:
+    - name: eap-deployments
+      emptyDir: {}
+
+  # Mount the shared volume into the main JBoss EAP container's deployment folder
+  volumeMounts:
+    - name: eap-deployments
+      mountPath: /opt/eap/standalone/deployments
+
+  # Inject Nexus credentials as environment variables into the Init Container
+  envSecrets:
+    - nexus-credentials
+
+  # The Init Container that pulls the files from Nexus before EAP starts
+  initContainers:
+    - name: fetch-nexus-artifacts
+      image: "registry.access.redhat.com/ubi8/ubi-minimal:8.10-1793069394"
+      env:
+        - name: NEXUS_USER
+          valueFrom:
+            secretKeyRef:
+              name: nexus-credentials
+              key: username
+        - name: NEXUS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nexus-credentials
+              key: password
+      command:
+        - /bin/bash
+        - -c
+        - |
+          # Fail the container if any download fails
+          set -e 
+          
+          echo "Starting Nexus artifact download..."
+          
+          # Define Nexus Base URL and paths
+          # Note: For this version, using intra-cluster Nexus that utilizes the Service host address and port.
+          NEXUS_URL="nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/"
+          APP1_PATH="org/jboss/eap/quickstarts/helloworld-html5/7.4.0.GA/helloworld-html5-7.4.0.GA.war"
+          APP2_PATH="org/jboss/eap/quickstarts/helloworld-rs/7.4.0.GA/helloworld-rs-7.4.0.GA.war.war"
+          
+          # Download files directly into the shared volume mount point
+          curl -k -u "${NEXUS_USER}:${NEXUS_PASSWORD}" -L "nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/org/jboss/eap/quickstarts/helloworld-rs/7.4.0.GA/helloworld-rs-7.4.0.GA.war"       -o /deployments/helloworld-rs.war 
+          curl -k -u "${NEXUS_USER}:${NEXUS_PASSWORD}" -L "nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/org/jboss/eap/quickstarts/helloworld-html5/7.4.0.GA/helloworld-html5-7.4.0.GA.war" -o /deployments/helloworld-html5.war 
+          
+          echo "Downloads completed successfully."
+      volumeMounts:
+        - name: eap-deployments
+          mountPath: /deployments  
+
