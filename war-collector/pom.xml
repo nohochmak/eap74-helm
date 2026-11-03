@@ -33,7 +33,7 @@
                                     <type>war</type>
                                     <destFileName>helloworld-html5.war</destFileName>
                                 </artifactItem> -->
-                                Second WAR File
+                                <!-- Second WAR File -->
                                 <artifactItem>
                                     <groupId>org.jboss.eap.quickstarts</groupId>
                                     <artifactId>helloworld-rs</artifactId>
