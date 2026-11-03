@@ -1,14 +1,16 @@
 image:
   tag: latest
-# nexus:
-#   username: "admin"
-#   password: "password"
-#   url: "nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-public/" 
+nexus:
+  username: "admin"
+  password: "password"
+  url: "http://nexus-laptop:8081/repository/maven-releases/"
+  # url: "nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-public/" 
+
 maven:
   mirrors:
     - id: internal-nexus
       name: Internal Nexus Mirror
-      url: nexus-laptop:8081/repository/maven-releases/
+      url: http://nexus-laptop:8081/repository/maven-releases/
       mirrorOf: "*"
       
   servers:
@@ -27,8 +29,8 @@ build:
   env:
     - name: MAVEN_ARGS_APPEND
       value: "-Dcom.redhat.xpaas.repo.jbossorg"
-    - name: MAVEN_MIRROR_URL
-      value: "nexus-laptop:8081/repository/maven-releases/"
+    # - name: MAVEN_MIRROR_URL
+    #   value: "http://nexus-laptop:8081/repository/maven-releases/"
   
     - name: GALLEON_PROVISION_FEATURE_PACKS
       value: "org.jboss.eap:eap-datasources-galleon-pack:7.4.0.GA-redhat-00003"
