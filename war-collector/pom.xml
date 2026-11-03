@@ -26,14 +26,14 @@
                         <configuration>
                             <artifactItems>
                                 <!-- First WAR File -->
-                                <artifactItem>
+                                <!-- <artifactItem>
                                     <groupId>org.jboss.eap.quickstarts</groupId>
                                     <artifactId>helloworld-html5</artifactId>
                                     <version>7.4.0.GA</version>
                                     <type>war</type>
                                     <destFileName>helloworld-html5.war</destFileName>
-                                </artifactItem>
-                                <!-- Second WAR File -->
+                                </artifactItem> -->
+                                Second WAR File
                                 <artifactItem>
                                     <groupId>org.jboss.eap.quickstarts</groupId>
                                     <artifactId>helloworld-rs</artifactId>
