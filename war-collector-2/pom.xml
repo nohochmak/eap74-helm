@@ -11,8 +11,8 @@
     <!-- Configure your Nexus repository -->
     <repositories>
         <repository>
-            <id>nexus</id>
-            <url>nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-public/</url>
+            <id>internal-nexus</id>
+            <url>nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/</url>
         </repository>
     </repositories>
 
