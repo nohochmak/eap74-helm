@@ -1,0 +1,3 @@
+<!-- add vault to standalone.xml config
+/core-service=vault:add(vault-options=[("KEYSTORE_URL" => "/Users/brenden/tools/RedHat/EAP74/vault.keystore"),("KEYSTORE_PASSWORD" => "MASK-30m.a9ccmSYV1.8EBVrm0P"),("KEYSTORE_ALIAS" => "vault"),("SALT" => "1a2b3c4d"),("ITERATION_COUNT" => "120"),("ENC_FILE_DIR" => "/Users/brenden/tools/RedHat/EAP74/")]) 
+-->

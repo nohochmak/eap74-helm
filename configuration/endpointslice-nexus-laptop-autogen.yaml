@@ -1,0 +1,24 @@
+﻿# Note: this was automatically generated from the Endpoint manifest 
+kind: EndpointSlice
+apiVersion: discovery.k8s.io/v1
+metadata:
+  name: nexus-laptop
+  namespace: multi-war-helm-mvn
+  # ownerReferences:
+  #   - apiVersion: v1
+  #     kind: Endpoints
+  #     name: nexus-laptop
+  #     uid: 0569546a-1da0-46f6-93c7-e99aa2e13378
+  #     controller: true
+  #     blockOwnerDeletion: true
+  # labels:
+  #   endpointslice.kubernetes.io/managed-by: endpointslicemirroring-controller.k8s.io
+  #   kubernetes.io/service-name: nexus-laptop
+addressType: IPv4
+endpoints:
+  - addresses:
+      - 192.168.0.106
+ports:
+  - name: http
+    protocol: TCP
+    port: 8081
