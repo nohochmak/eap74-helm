@@ -61,7 +61,7 @@ deploy:
           APP1_PATH="org/jboss/eap/quickstarts/helloworld-html5/7.4.0.GA/helloworld-html5-7.4.0.GA.war"
           APP2_PATH="org/jboss/eap/quickstarts/helloworld-rs/7.4.0.GA/helloworld-rs-7.4.0.GA.war.war"
           
-          # Download files directly into the shared volume mount point
+          # Download files directly into the shared volume mount pointnexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/
           curl -k -u "${NEXUS_USER}:${NEXUS_PASSWORD}" -L "nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/org/jboss/eap/quickstarts/helloworld-rs/7.4.0.GA/helloworld-rs-7.4.0.GA.war"       -o /deployments/helloworld-rs.war 
           curl -k -u "${NEXUS_USER}:${NEXUS_PASSWORD}" -L "nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/org/jboss/eap/quickstarts/helloworld-html5/7.4.0.GA/helloworld-html5-7.4.0.GA.war" -o /deployments/helloworld-html5.war 
           
