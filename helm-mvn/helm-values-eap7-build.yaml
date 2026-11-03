@@ -8,7 +8,7 @@ maven:
   mirrors:
     - id: internal-nexus
       name: Internal Nexus Mirror
-      url: nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/
+      url: nexus-laptop:8081/repository/maven-releases/
       mirrorOf: "*"
       
   servers:
