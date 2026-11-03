@@ -27,8 +27,8 @@ build:
   env:
     - name: MAVEN_ARGS_APPEND
       value: "-Dcom.redhat.xpaas.repo.jbossorg"
-    # - name: MAVEN_MIRROR_URL
-    #   value: "nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/"
+    - name: MAVEN_MIRROR_URL
+      value: "nexus-laptop:8081/repository/maven-releases/"
   
     - name: GALLEON_PROVISION_FEATURE_PACKS
       value: "org.jboss.eap:eap-datasources-galleon-pack:7.4.0.GA-redhat-00003"

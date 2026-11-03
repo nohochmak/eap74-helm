@@ -9,24 +9,6 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.jboss.eap.quickstarts</groupId>
-            <artifactId>helloworld-html5</artifactId>
-            <version>7.4.0.GA</version>
-            <type>war</type>
-            <scope>provided</scope> <!-- Prevents it from polluting your main artifact -->
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.eap.quickstarts</groupId>
-            <artifactId>helloworld-rs</artifactId>
-            <version>7.4.0.GA</version>
-            <type>war</type>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
-
 
     <build>
 
