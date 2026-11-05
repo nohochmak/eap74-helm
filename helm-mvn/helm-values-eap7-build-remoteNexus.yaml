@@ -1,0 +1,57 @@
+image:
+  tag: latest
+nexus:
+  username: "admin"
+  password: "password"
+  url: "http://nexus-laptop:8081/repository/maven-releases/"
+  # url: "nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-public/" 
+
+maven:
+  mirrors:
+    - id: internal-nexus
+      name: Internal Nexus Mirror
+      url: http://nexus-laptop:8081/repository/maven-releases/
+      mirrorOf: "*"
+      
+  servers:
+    - id: internal-nexus
+      username: "admin"
+      password: "password"
+
+build:
+  enabled: true
+  mode: s2i
+  uri: 'https://github.com/nohochmak/eap74-helm.git'
+  ref: main
+  contextDir: war-collector
+  output:
+    kind: ImageStreamTag
+  env:
+    - name: MAVEN_ARGS_APPEND
+      value: "-Dcom.redhat.xpaas.repo.jbossorg"
+    # - name: MAVEN_MIRROR_URL
+    #   value: "http://nexus-laptop:8081/repository/maven-releases/"
+  
+    - name: GALLEON_PROVISION_FEATURE_PACKS
+      value: "org.jboss.eap:eap-datasources-galleon-pack:7.4.0.GA-redhat-00003"
+    - name: GALLEON_PROVISION_LAYERS
+      value: "cloud-server,ejb,web-clustering"
+    # - name: ORACLE_DRIVER_VERSION
+    #   value: "19.23.0.0" # What is the correct value?  What is the version of Oracle DB?
+    # - name: ORACLE_DRIVER_ARTIFACT_ID
+    #   value: "ojdbc8" #Move to ojdbc8 ?
+  triggers: {}
+  s2i:
+    version: latest
+    arch: amd64
+    jdk: '8'
+    amd64:
+      jdk8:
+        builderImage: registry.redhat.io/jboss-eap-7/eap74-openjdk8-openshift-rhel7
+        runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk8-runtime-openshift-rhel7
+      jdk11:
+        builderImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-openshift-rhel8
+        runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-runtime-openshift-rhel8
+deploy:
+  enabled: false
+

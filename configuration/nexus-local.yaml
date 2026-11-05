@@ -7,7 +7,7 @@ spec:
     - name: http
       protocol: TCP
       port: 8081
-      targetPort: 8081
+      targetPort: 8081d
 ---
 
 # discovery.k8s.io/v1 EndpointSlice is latest
@@ -17,7 +17,7 @@ metadata:
   name: nexus-laptop
 subsets:
   - addresses:
-      - ip: 192.168.0.106 # Internal gateway IP, AI: 192.168.127.1 # Use 192.168.130.1 if on Linux host
+      - ip: 192.168.0.104 # Internal gateway IP, AI: 192.168.127.1 # Use 192.168.130.1 if on Linux host
     ports:
       - name: http
         port: 8081

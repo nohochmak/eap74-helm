@@ -1,0 +1,21 @@
+# Route - sub-context path for helloworld-rs
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: route-helloworld-rs
+  namespace: multi-war-helm-mvn
+  labels:
+    app.kubernetes.io/name: multi-war-app-mvn
+
+spec:
+  host: multi-war-app-mvn-route-multi-war-helm-mvn.apps-crc.testing
+  path: /helloworld-rs        # The specific sub-context path
+  to:
+    kind: Service
+    name: multi-war-app-mvn-loadbalancer
+    weight: 100
+  port:
+    targetPort: http
+  wildcardPolicy: None
+#  tls:
+#    termination: edge         # Optional: for HTTPS

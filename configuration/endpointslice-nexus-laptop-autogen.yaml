@@ -17,7 +17,7 @@ metadata:
 addressType: IPv4
 endpoints:
   - addresses:
-      - 192.168.0.106
+      - 192.168.0.104
 ports:
   - name: http
     protocol: TCP
