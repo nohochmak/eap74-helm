@@ -55,7 +55,7 @@
     <repositories>
         <repository>
             <id>internal-nexus</id>
-            <url> nexus3.multi-war-helm-mvn.svc.cluster.local/repository/maven-releases/</url> <!-- Using Service URL for test-->
+            <url>nexus3.multi-war-helm-mvn.svc.cluster.local/repository/maven-releases/</url> <!-- Using Service URL for test-->
             <releases>
                 <enabled>true</enabled>
             </releases>
