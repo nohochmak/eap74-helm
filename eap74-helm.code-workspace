@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../case07786293"
+		},
+		{
+			"path": "../../SampleEAP7Apps/Konveyor/coolstore"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "interactive",
+		"maven.view": "hierarchical"
+	}
+}

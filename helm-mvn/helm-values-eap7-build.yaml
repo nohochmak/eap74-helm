@@ -10,7 +10,7 @@ maven:
   mirrors:
     - id: internal-nexus
       name: Internal Nexus Mirror
-      url: http://nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/
+      url: "http://nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/"
       mirrorOf: "*"
       
   servers:
@@ -47,8 +47,11 @@ build:
     jdk: '8'
     amd64:
       jdk8:
-        builderImage: registry.redhat.io/jboss-eap-7/eap74-openjdk8-openshift-rhel7
-        runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk8-runtime-openshift-rhel7
+        # 2026nov06 - Using ELS versions of RHEL 8 base - verified
+        builderImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-openshift-rhel8
+        runtimeImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-runtime-openshift-rhel8
+        # builderImage: registry.redhat.io/jboss-eap-7/eap74-openjdk8-openshift-rhel7
+        # runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk8-runtime-openshift-rhel7
       jdk11:
         builderImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-openshift-rhel8
         runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-runtime-openshift-rhel8
