@@ -3,14 +3,14 @@ image:
 nexus:
   username: "admin"
   password: "password"
-  url: "http://nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/"
-  # url: "nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-public/" 
+  url: "http://nexus3.multi-war-helm-mvn.svc.cluster.local/repository/maven-releases/"
+  
 
 maven:
   mirrors:
     - id: internal-nexus
       name: Internal Nexus Mirror
-      url: "http://nexus3.multi-war-helm-mvn.svc.cluster.local:8081/repository/maven-releases/"
+      url: "http://nexus3.multi-war-helm-mvn.svc.cluster.local/repository/maven-releases/"
       mirrorOf: "*"
       
   servers:
