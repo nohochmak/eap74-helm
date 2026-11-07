@@ -3,11 +3,11 @@
 apiVersion: wildfly.org/v1alpha1
 kind: WildFlyServer
 metadata:
-  name: multi-war-app-mvn
+  name: multi-war-mvn
   namespace: multi-war-helm-mvn
 spec:
   serviceAccountName: coolstoresa
-  applicationImage: multi-war-app-mvn:latest
+  applicationImage: multi-war-app:latest
   replicas: 1
 
   env:

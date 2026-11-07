@@ -5,14 +5,15 @@ metadata:
   name: route-helloworld-rs
   namespace: multi-war-helm-mvn
   labels:
-    app.kubernetes.io/name: multi-war-app-mvn
+    app.kubernetes.io/name: multi-war-app
 
 spec:
-  host: multi-war-app-mvn-route-multi-war-helm-mvn.apps-crc.testing
+  host: multi-war-mvn-route-multi-war-helm-mvn.apps-crc.testing
+  # host: multi-war-app-route-multi-war-helm-mvn.apps-crc.testing
   path: /helloworld-rs        # The specific sub-context path
   to:
     kind: Service
-    name: multi-war-app-mvn-loadbalancer
+    name: multi-war-mvn-loadbalancer
     weight: 100
   port:
     targetPort: http
