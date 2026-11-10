@@ -1,0 +1,110 @@
+image:
+  tag: latest
+nexus:
+  username: "admin"
+  password: "password"
+  url: "http://nexus3.multi-war-helm-mvn.svc.cluster.local/repository/maven-releases/"
+
+build:
+  enabled: true
+  mode: s2i
+  uri: 'https://github.com/nohochmak/eap74-helm.git'
+  ref: main
+  # Point to the Git directory where coolstore Pom.xml resides
+  contextDir: war-collector-coolstore
+  output:
+    kind: ImageStreamTag
+  env:
+    - name: MAVEN_ARGS_APPEND
+      value: "-Dcom.redhat.xpaas.repo.jbossorg"
+      # 4. Critical Cloud HA Environment variables required by standalone-full-ha
+    - name: WILDFLY_SERVER_CONFIGURATION
+      value: "standalone-openshift.xml"
+    - name: JGROUPS_PING_PROTOCOL
+      value: "openshift.KUBE_PING"
+    - name: KUBERNETES_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+
+   
+    # --- DATABASE CREDENTIALS INJECTED FROM KUBERNETES SECRET into standalone-full-ha.xml---
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: eap-db-credentials
+          key: database-user
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: eap-db-credentials
+          key: database-password
+
+
+
+  s2i:
+    # 1. Instruct the S2I build engine to skip Galleon provisioning
+    galleonEnabled: "false"
+    
+    # 2. Prevent S2I from generating an isolated cloud-default-config XML file
+    env:
+      - name: DISABLE_GALLEON
+        value: "true"
+      - name: EAP_ONLY_DEPLOYMENTS
+        value: "true"
+
+    version: latest
+    arch: amd64
+    jdk: '8'
+    amd64:
+      jdk8:
+        # 2026nov06 - Using ELS versions of base RHEL 8 - NOTE: change of Maven version in newer images
+        #             causes block of non-https repo connections.
+        # builderImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-openshift-rhel8
+        # runtimeImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-runtime-openshift-rhel8
+        builderImage: registry.redhat.io/jboss-eap-7/eap74-openjdk8-openshift-rhel7
+        runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk8-runtime-openshift-rhel7
+      jdk11:
+        builderImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-openshift-rhel8
+        runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-runtime-openshift-rhel8
+  
+  # 3. Inject your legacy configuration into the running container
+  configMaps:
+    - name: eap-stal-coolstore
+      mountPath: /opt/eap/standalone/configuration/standalone-openshift.xml
+      subPath: standalone-openshift.xml
+  # volumes:
+  #   - name: eap-stal-coolstore
+  #     configMap:
+  #       name: eap-stal-coolstore
+  #       defaultMode: 420 # Hex 0644 - Allows group reading cleanly under OpenShift arbitrary UIDs
+
+
+
+  triggers: {}
+
+deploy:
+  enabled: false
+
+  env:
+    - name: CLI_GRACEFUL_SHUTDOWN
+      value: "true"
+    - name: WILDFLY_SERVER_CONFIG
+      value: "standalone-openshift.xml"
+
+
+
+    # 1. Declare your volume under the proper Red Hat Helm deploy block
+  volumes:
+    - name: eap-stal-coolstore
+      configMap:
+        name: eap-stal-coolstore
+        defaultMode: 420 # Hex 0644 - Allows group reading cleanly under OpenShift arbitrary UIDs
+
+  # 2. Map the volume directly to the EAP standalone.xml path using subPath
+  volumeMounts:
+    - name: eap-stal-coolstore
+      mountPath: /opt/eap/standalone/configuration/standalone-openshift.xml  # The target path inside the container
+      subPath: standalone-openshift.xml                                      # The key name inside your ConfigMap
+      readOnly: true
+

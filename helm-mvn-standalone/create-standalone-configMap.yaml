@@ -1,0 +1,1 @@
+# TODO: REPLACE WITH MANIFEST: oc create configmap eap-stal-coolstore --from-file=standalone-openshift.xml=standalone-full-ha.xml

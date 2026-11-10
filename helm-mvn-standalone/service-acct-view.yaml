@@ -1,0 +1,3 @@
+# Create manifest for this ServiceAccount - currently "default"
+# oc adm policy add-role-to-user view -z default -n multi-war-helm-mvn
+# clusterrole.rbac.authorization.k8s.io/view added: "default"
