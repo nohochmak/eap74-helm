@@ -5,6 +5,19 @@ nexus:
   password: "password"
   url: "http://nexus3.multi-war-helm-mvn.svc.cluster.local/repository/maven-releases/"
 
+maven:
+  mirrors:
+    - id: internal-nexus
+      name: Internal Nexus Mirror
+      url: "http://nexus3.multi-war-helm-mvn.svc.cluster.local/repository/maven-releases/"
+      mirrorOf: "*"
+      
+  servers:
+    - id: internal-nexus
+      username: "admin"
+      password: "password"
+
+
 build:
   enabled: true
   mode: s2i

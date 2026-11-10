@@ -1,3 +1,17 @@
 # Create manifest for this ServiceAccount - currently "default"
 # oc adm policy add-role-to-user view -z default -n multi-war-helm-mvn
 # clusterrole.rbac.authorization.k8s.io/view added: "default"
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eap-kube-ping-view-binding
+  namespace: multi-war-helm-mvn # Change to your actual namespace/project name
+subjects:
+- kind: ServiceAccount
+  name: default # Change this if your Helm chart specifies a custom ServiceAccount name
+  namespace: multi-war-helm-mvn
+roleRef:
+  kind: ClusterRole
+  name: view # Uses the built-in system role to look up pod configurations
+  apiGroup: rbac.authorization.k8s.io
