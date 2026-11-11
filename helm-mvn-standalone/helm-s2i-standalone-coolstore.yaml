@@ -25,6 +25,7 @@ build:
   ref: main
   # Point to the Git directory where coolstore Pom.xml resides
   contextDir: war-collector-coolstore
+
   output:
     kind: ImageStreamTag
   env:
@@ -41,17 +42,17 @@ build:
           fieldPath: metadata.namespace
 
    
-    # --- DATABASE CREDENTIALS INJECTED FROM KUBERNETES SECRET into standalone-full-ha.xml---
-    - name: DB_USER
+    # Credentials to connect to Nexus on OCP
+    - name: NEXUS_OCP_PASSWORD
       valueFrom:
         secretKeyRef:
-          name: eap-db-credentials
-          key: database-user
-    - name: DB_PASSWORD
+          key: password
+          name: nexus-credentials
+    - name: NEXUS_OCP_USER
       valueFrom:
         secretKeyRef:
-          name: eap-db-credentials
-          key: database-password
+          key: username
+          name: nexus-credentials
 
 
 
@@ -82,42 +83,12 @@ build:
         runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-runtime-openshift-rhel8
   
   # 3. Inject your legacy configuration into the running container
-  configMaps:
-    - name: eap-stal-coolstore
-      mountPath: /opt/eap/standalone/configuration/standalone-openshift.xml
-      subPath: standalone-openshift.xml
-  # volumes:
+  # configMaps:
   #   - name: eap-stal-coolstore
-  #     configMap:
-  #       name: eap-stal-coolstore
-  #       defaultMode: 420 # Hex 0644 - Allows group reading cleanly under OpenShift arbitrary UIDs
-
-
+  #     mountPath: /opt/eap/standalone/configuration/standalone-openshift.xml
+  #     subPath: standalone-openshift.xml
 
   triggers: {}
 
 deploy:
   enabled: false
-
-  env:
-    - name: CLI_GRACEFUL_SHUTDOWN
-      value: "true"
-    - name: WILDFLY_SERVER_CONFIG
-      value: "standalone-openshift.xml"
-
-
-
-    # 1. Declare your volume under the proper Red Hat Helm deploy block
-  volumes:
-    - name: eap-stal-coolstore
-      configMap:
-        name: eap-stal-coolstore
-        defaultMode: 420 # Hex 0644 - Allows group reading cleanly under OpenShift arbitrary UIDs
-
-  # 2. Map the volume directly to the EAP standalone.xml path using subPath
-  volumeMounts:
-    - name: eap-stal-coolstore
-      mountPath: /opt/eap/standalone/configuration/standalone-openshift.xml  # The target path inside the container
-      subPath: standalone-openshift.xml                                      # The key name inside your ConfigMap
-      readOnly: true
-

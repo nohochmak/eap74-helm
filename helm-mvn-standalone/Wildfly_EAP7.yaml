@@ -1,5 +1,3 @@
-
-
 apiVersion: wildfly.org/v1alpha1
 kind: WildFlyServer
 metadata:
@@ -11,15 +9,37 @@ spec:
   replicas: 1
 
   env:
-    # Credentials to connect to Nexus on OCP
-    # are taken from their secrets
-    - name: NEXUS_OCP_PASSWORD
+
+    # Force EAP to boot with your mounted configuration and KUBE_PING clustering
+    - name: WILDFLY_SERVER_CONFIGURATION
+      value: "standalone-openshift.xml"
+    - name: JGROUPS_PING_PROTOCOL
+      value: "openshift.KUBE_PING"
+    - name: KUBERNETES_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+
+    # Database credentials injected from Kubernetes Secret for standalone-full-ha.xml
+    - name: DB_USER
       valueFrom:
         secretKeyRef:
-          key: password
-          name: nexus-credentials
-    - name: NEXUS_OCP_USER
+          name: eap-db-credentials
+          key: database-user
+    - name: DB_PASSWORD
       valueFrom:
         secretKeyRef:
-          key: username
-          name: nexus-credentials
+          name: eap-db-credentials
+          key: database-password
+
+  # volumes:
+  #   - name: eap-stal-coolstore
+  #     configMap:
+  #       name: eap-stal-coolstore
+  #       defaultMode: 420
+
+  # volumeMounts:
+  #   - name: eap-stal-coolstore
+  #     mountPath: /opt/eap/standalone/configuration/standalone-openshift.xml
+  #     subPath: standalone-openshift.xml
+  #     readOnly: true
