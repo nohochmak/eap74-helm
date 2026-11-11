@@ -163,7 +163,7 @@
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/CoolstoreDS" pool-name="CoolstoreDS" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:postgresql://external-postgres-db:5432/postgresDB</connection-url>
+                    <connection-url>jdbc:postgresql://external-postgres-db-1:5432/postgresDB</connection-url>
                     <driver>postgresql</driver>
                     <security>
                         <!-- Reads from DB_USER env var, defaults to 'admin' if missing -->
