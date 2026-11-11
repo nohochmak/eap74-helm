@@ -555,7 +555,7 @@
             </mail-session>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:messaging-activemq:13.0">
-            <!-- <server name="default">
+            <server name="default">
                 <cluster password="password" />
                 <statistics
                     enabled="${wildfly.messaging-activemq.statistics-enabled:${wildfly.statistics-enabled:false}}" />
@@ -600,7 +600,7 @@
                 <pooled-connection-factory name="activemq-ra"
                     entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm"
                     transaction="xa" />
-            </server> -->
+            </server>
         </subsystem>
         <subsystem xmlns="urn:wildfly:metrics:1.0" security-enabled="false" exposed-subsystems="*"
             prefix="${wildfly.metrics.prefix:jboss}" />
