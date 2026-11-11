@@ -33,7 +33,7 @@
                                     <artifactId>monolith</artifactId>
                                     <version>1.0.0</version>
                                     <type>war</type>
-                                    <destFileName>coolstore.war</destFileName>
+                                    <destFileName>ROOT.war</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <!-- This target folder is the S2I default drop-zone -->

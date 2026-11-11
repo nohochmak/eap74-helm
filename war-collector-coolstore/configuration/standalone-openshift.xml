@@ -715,9 +715,4 @@
                 port="${jboss.mail.server.port:25}" />
         </outbound-socket-binding>
     </socket-binding-group>
-    <deployments>
-        <deployment name="ROOT.war" runtime-name="ROOT.war">
-            <content sha1="0e79485fc5c8a6ef385a9bcded9917c13f7a525f" />
-        </deployment>
-    </deployments>
 </server>
