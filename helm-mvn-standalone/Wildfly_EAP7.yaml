@@ -1,0 +1,25 @@
+
+
+apiVersion: wildfly.org/v1alpha1
+kind: WildFlyServer
+metadata:
+  name: multi-war-mvn
+  namespace: multi-war-helm-mvn
+spec:
+  serviceAccountName: coolstoresa
+  applicationImage: multi-war-coolstore:latest
+  replicas: 1
+
+  env:
+    # Credentials to connect to Nexus on OCP
+    # are taken from their secrets
+    - name: NEXUS_OCP_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: password
+          name: nexus-credentials
+    - name: NEXUS_OCP_USER
+      valueFrom:
+        secretKeyRef:
+          key: username
+          name: nexus-credentials

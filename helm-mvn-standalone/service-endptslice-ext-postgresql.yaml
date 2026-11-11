@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-postgres-db
+  namespace: multi-war-helm-mvn # Change to your EAP project namespace
+spec:
+  # No selector means OpenShift routes traffic to the matching EndpointSlice below
+  ports:
+    - name: postgresql
+      protocol: TCP
+      port: 5432       # Port used inside your EAP connection URL
+      targetPort: 5432 # Port listening on 192.168.0.104
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: external-postgres-db-1
+  namespace: multi-war-helm-mvn # Must match the Service namespace
+  labels:
+    # Links this EndpointSlice directly to the Service above
+    kubernetes.io/service-name: external-postgres-db
+addressType: IPv4
+ports:
+  - name: postgresql
+    appProtocol: postgresql
+    protocol: TCP
+    port: 5432
+endpoints:
+  # this address is Podman Gateway on a laptop
+  - addresses:  
+      - "192.168.0.104"
