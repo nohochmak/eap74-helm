@@ -2,13 +2,13 @@
           xmlns:xsi="http://w3.org" 
           xsi:schemaLocation="http://apache.org http://apache.org">
   <mirrors>
-    <mirror>
-      <id>internal-nexus</id>
-      <name>Internal Enterprise Repository</name>
+    <!-- <mirror> -->
+      <!-- <id>internal-nexus</id> -->
+      <!-- <name>Internal Enterprise Repository</name> -->
       <!-- <url>http://nexus-laptop:8081/repository/maven-releases/</url> -->
-      <url>https://nexus3-multi-war-helm-mvn.apps-crc.testing/repository/maven-public/</url>
-      <mirrorOf>*</mirrorOf>
-    </mirror>
+      <!-- <url>https://nexus3-multi-war-helm-mvn.apps-crc.testing/repository/maven-public/</url> -->
+      <!-- <mirrorOf>*</mirrorOf> -->
+    <!-- </mirror> -->
     <!-- Add this block to allow your specific HTTP Nexus -->
     <mirror>
         <id>allow-internal-nexus</id>

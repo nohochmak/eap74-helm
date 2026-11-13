@@ -7,13 +7,13 @@ nexus:
 
 maven:
   mirrors:
-    - id: internal-nexus
+    - id: allow-internal-nexus
       name: Internal Nexus Mirror
       url: "http://nexus3.multi-war-helm-mvn.svc.cluster.local/repository/maven-releases/"
-      mirrorOf: "*"
+      mirrorOf: "internal-nexus"
       
   servers:
-    - id: internal-nexus
+    - id: allow-internal-nexus
       username: "admin"
       password: "password"
 
