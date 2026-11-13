@@ -11,7 +11,7 @@ spec:
   env:
     # Prevents the EAP image startup script from running /tmp/cli-script-*.cli
     - name: DISABLE_BOOT_SCRIPT_INVOKER
-      value: "true"
+      value: "false"
     - name: DISABLE_EMBEDDED_JMS_BROKER  
       value: "true"
     # Force EAP to boot with your mounted configuration and KUBE_PING clustering
