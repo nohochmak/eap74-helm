@@ -1,0 +1,172 @@
+NAME: multi-war-coolstore
+LAST DEPLOYED: Thu Nov 12 12:45:06 2026
+NAMESPACE: multi-war-helm-mvn
+STATUS: pending-install
+REVISION: 1
+TEST SUITE: None
+HOOKS:
+MANIFEST:
+---
+# Source: eap74/templates/buildconfig-s2i-build-artifacts.yaml
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app.kubernetes.io/instance: multi-war-coolstore
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: multi-war-coolstore
+    app.kubernetes.io/version: "7.4"
+    app.openshift.io/runtime: eap
+    com.company: Red_Hat
+    helm.sh/chart: eap74-1.1.2
+    rht.comp: EAP
+    rht.comp_ver: "7.4"
+    rht.prod_name: Red_Hat_Runtimes
+    rht.prod_ver: 2023-Q1
+    rht.subcomp_t: application
+  name: multi-war-coolstore-build-artifacts
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: multi-war-coolstore-build-artifacts:latest
+  runPolicy: Serial
+  source:
+    contextDir: war-collector-coolstore
+    git:
+      ref: main
+      uri: https://github.com/nohochmak/eap74-helm.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      env:
+      - name: GALLEON_PROVISION_DEFAULT_FAT_SERVER
+        value: "true"
+      - name: CUSTOM_INSTALL_DIRECTORIES
+        value: extensions/*
+      - name: MAVEN_ARGS_APPEND
+        value: -Dcom.redhat.xpaas.repo.jbossorg
+      - name: WILDFLY_SERVER_CONFIGURATION
+        value: standalone-openshift.xml
+      - name: JGROUPS_PING_PROTOCOL
+        value: openshift.KUBE_PING
+      - name: KUBERNETES_NAMESPACE
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.namespace
+      - name: NEXUS_OCP_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: nexus-credentials
+      - name: NEXUS_OCP_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: nexus-credentials
+      forcePull: true
+      from:
+        kind: DockerImage
+        name: registry.redhat.io/jboss-eap-7/eap74-openjdk8-openshift-rhel7:latest
+      incremental: true
+    type: Source
+  triggers:
+  - type: ConfigChange
+---
+# Source: eap74/templates/buildconfig-s2i.yaml
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app.kubernetes.io/instance: multi-war-coolstore
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: multi-war-coolstore
+    app.kubernetes.io/version: "7.4"
+    app.openshift.io/runtime: eap
+    com.company: Red_Hat
+    helm.sh/chart: eap74-1.1.2
+    rht.comp: EAP
+    rht.comp_ver: "7.4"
+    rht.prod_name: Red_Hat_Runtimes
+    rht.prod_ver: 2023-Q1
+    rht.subcomp_t: application
+  name: multi-war-coolstore
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: multi-war-coolstore:latest
+  source:
+    dockerfile: |-
+      FROM registry.redhat.io/jboss-eap-7/eap74-openjdk8-runtime-openshift-rhel7:latest
+      COPY /server $JBOSS_HOME
+      USER root
+      RUN chown -R jboss:root $JBOSS_HOME && chmod -R ug+rwX $JBOSS_HOME
+      USER jboss
+      CMD $JBOSS_HOME/bin/openshift-launch.sh
+    images:
+    - from:
+        kind: ImageStreamTag
+        name: multi-war-coolstore-build-artifacts:latest
+      paths:
+      - destinationDir: .
+        sourcePath: /s2i-output/server/
+    type: Docker
+  strategy:
+    dockerStrategy:
+      from:
+        kind: DockerImage
+        name: registry.redhat.io/jboss-eap-7/eap74-openjdk8-runtime-openshift-rhel7:latest
+    type: Docker
+  triggers:
+  - imageChange:
+      from:
+        kind: ImageStreamTag
+        name: multi-war-coolstore-build-artifacts:latest
+    type: ImageChange
+  - type: ConfigChange
+---
+# Source: eap74/templates/imagestream.yaml
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app.kubernetes.io/instance: multi-war-coolstore
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: multi-war-coolstore
+    app.kubernetes.io/version: "7.4"
+    app.openshift.io/runtime: eap
+    com.company: Red_Hat
+    helm.sh/chart: eap74-1.1.2
+    rht.comp: EAP
+    rht.comp_ver: "7.4"
+    rht.prod_name: Red_Hat_Runtimes
+    rht.prod_ver: 2023-Q1
+    rht.subcomp_t: application
+  name: multi-war-coolstore
+---
+# Source: eap74/templates/imagestream.yaml
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app.kubernetes.io/instance: multi-war-coolstore
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: multi-war-coolstore
+    app.kubernetes.io/version: "7.4"
+    app.openshift.io/runtime: eap
+    com.company: Red_Hat
+    helm.sh/chart: eap74-1.1.2
+    rht.comp: EAP
+    rht.comp_ver: "7.4"
+    rht.prod_name: Red_Hat_Runtimes
+    rht.prod_ver: 2023-Q1
+    rht.subcomp_t: application
+  name: multi-war-coolstore-build-artifacts
+
+NOTES:
+Your EAP 7.4 application is building! To follow the build, run:
+
+$ oc get build -w
+
+Note that your Deployment will report "ErrImagePull" and "ImagePullBackOff" until the build is complete. Once the build is complete, your image will be automatically rolled out.

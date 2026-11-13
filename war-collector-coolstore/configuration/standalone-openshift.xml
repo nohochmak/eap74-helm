@@ -2,6 +2,8 @@
 
 <server xmlns="urn:jboss:domain:16.0">
     <extensions>
+        <extension module="org.wildfly.extension.microprofile.health-smallrye"/>
+
         <extension module="org.jboss.as.clustering.infinispan" />
         <extension module="org.jboss.as.clustering.jgroups" />
         <extension module="org.jboss.as.connector" />
@@ -16,7 +18,7 @@
         <extension module="org.jboss.as.jsr77" />
         <extension module="org.jboss.as.logging" />
         <extension module="org.jboss.as.mail" />
-        <extension module="org.jboss.as.modcluster" />
+        <!-- <extension module="org.jboss.as.modcluster" /> -->
         <extension module="org.jboss.as.naming" />
         <extension module="org.jboss.as.pojo" />
         <extension module="org.jboss.as.remoting" />
@@ -103,6 +105,8 @@
         </access-control>
     </management>
     <profile>
+        <subsystem xmlns="urn:wildfly:microprofile-health-smallrye:2.0" security-enabled="false"/>
+
         <subsystem xmlns="urn:jboss:domain:logging:8.0">
             <periodic-rotating-file-handler name="FILE" autoflush="true">
                 <formatter>
@@ -505,7 +509,7 @@
         <subsystem xmlns="urn:jboss:domain:jdr:1.0" />
         <subsystem xmlns="urn:jboss:domain:jgroups:8.0">
             <channels default="ee">
-                <channel name="ee" stack="udp" cluster="ejb" />
+                <channel name="ee" stack="tcp" cluster="ejb" />
             </channels>
             <stacks>
                 <stack name="udp">
@@ -525,7 +529,7 @@
                 </stack>
                 <stack name="tcp">
                     <transport type="TCP" socket-binding="jgroups-tcp" />
-                    <socket-protocol type="MPING" socket-binding="jgroups-mping" />
+                    <protocol type="openshift.KUBE_PING" />
                     <protocol type="MERGE3" />
                     <socket-protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd" />
                     <protocol type="FD_ALL" />
@@ -604,13 +608,13 @@
         </subsystem>
         <subsystem xmlns="urn:wildfly:metrics:1.0" security-enabled="false" exposed-subsystems="*"
             prefix="${wildfly.metrics.prefix:jboss}" />
-        <subsystem xmlns="urn:jboss:domain:modcluster:5.0">
+        <!-- <subsystem xmlns="urn:jboss:domain:modcluster:5.0">
             <proxy name="default" advertise-socket="modcluster" listener="ajp">
                 <dynamic-load-provider>
                     <load-metric type="cpu" />
                 </dynamic-load-provider>
             </proxy>
-        </subsystem>
+        </subsystem> -->
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <remote-naming />
         </subsystem>
@@ -751,9 +755,9 @@
             port="${jboss.management.http.port:9990}" />
         <socket-binding name="management-https" interface="management"
             port="${jboss.management.https.port:9993}" />
-        <socket-binding name="modcluster"
+        <!-- <socket-binding name="modcluster"
             multicast-address="${jboss.modcluster.multicast.address:224.0.1.105}"
-            multicast-port="23364" />
+            multicast-port="23364" /> -->
         <socket-binding name="txn-recovery-environment" port="4712" />
         <socket-binding name="txn-status-manager" port="4713" />
         <outbound-socket-binding name="mail-smtp">

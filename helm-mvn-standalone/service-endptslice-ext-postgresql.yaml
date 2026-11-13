@@ -28,4 +28,4 @@ ports:
 endpoints:
   # this address is Podman Gateway on a laptop
   - addresses:  
-      - "192.168.0.104"
+      - "192.168.0.102"
