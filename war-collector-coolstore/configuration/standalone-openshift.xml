@@ -527,7 +527,10 @@
                 </stack>
                 <stack name="tcp">
                     <transport type="TCP" socket-binding="jgroups-tcp" />
-                    <protocol type="openshift.KUBE_PING" module="org.jgroups.kubernetes"/>
+                    <protocol type="TCPPING">
+                        <property name="initial_hosts">${jgroups.tcpping.initial_hosts:127.0.0.1[7600]}</property>
+                        <property name="port_range">0</property>
+                    </protocol>
                     <protocol type="MERGE3" />
                     <socket-protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd" />
                     <protocol type="FD_ALL" />
