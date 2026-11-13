@@ -36,6 +36,14 @@ spec:
           name: eap-db-credentials
           key: database-password
 
+  readinessProbe:
+    httpGet:
+      path: /health/ready
+      port: 9990
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+
   # volumes:
   #   - name: eap-stal-coolstore
   #     configMap:
