@@ -2,6 +2,7 @@
 
 <server xmlns="urn:jboss:domain:16.0">
     <extensions>
+        <extension module="org.wildfly.extension.microprofile.health-smallrye"/>
 
         <extension module="org.jboss.as.clustering.infinispan" />
         <extension module="org.jboss.as.clustering.jgroups" />
@@ -104,6 +105,7 @@
         </access-control>
     </management>
     <profile>
+        <subsystem xmlns="urn:wildfly:microprofile-health-smallrye:2.0" security-enabled="false"/>
 
         <subsystem xmlns="urn:jboss:domain:logging:8.0">
             <periodic-rotating-file-handler name="FILE" autoflush="true">
