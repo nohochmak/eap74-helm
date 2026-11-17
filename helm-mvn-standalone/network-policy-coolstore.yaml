@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eap-jgroups-clustering
+  namespace: multi-war-helm-mvn
+spec:
+  podSelector:
+    matchLabels:
+      # Match the app label output by your Helm Chart
+      app.kubernetes.io/name: multi-war-coolstore
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: multi-war-coolstore
+    ports:
+    - protocol: TCP
+      port: 7600  # JGroups default clustering port
+    - protocol: TCP
+      port: 55200 # FD_SOCK failure detection port

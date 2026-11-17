@@ -1,0 +1,115 @@
+apiVersion: wildfly.org/v1alpha1
+kind: WildFlyServer
+metadata:
+  name: multi-war-mvn
+  namespace: multi-war-helm-stndal
+spec:
+  serviceAccountName: coolstoresa
+  applicationImage: multi-war-coolstore:latest
+  replicas: 1
+
+  env:
+    # Prevents the EAP image startup script from running /tmp/cli-script-*.cli
+    - name: DISABLE_BOOT_SCRIPT_INVOKER
+      value: "true"
+    - name: DISABLE_EMBEDDED_JMS_BROKER  
+      value: "true"
+    # Force EAP to boot with your mounted configuration and KUBE_PING clustering
+    - name: WILDFLY_SERVER_CONFIGURATION
+      value: "standalone-openshift.xml"
+    - name: JGROUPS_PING_PROTOCOL
+      value: "kubernetes.KUBE_PING"
+    - name: KUBERNETES_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    # private binds to 0.0.0.0 on pod interface - not 127.0.0.1
+    - name: JAVA_OPTS_APPEND
+      value: "-Djboss.bind.address.private=0.0.0.0"
+    # increase timeout for safety
+    - name: PROBE_CURL_TIMEOUT
+      value: "5"
+
+    # - EAP credentials to fix health check
+    - name: ADMIN_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: eap-mgmt-admin
+          key: username
+    - name: ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: eap-mgmt-admin
+          key: password
+
+
+    # Database credentials injected from Kubernetes Secret for standalone-full-ha.xml
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: eap-db-credentials
+          key: database-user
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: eap-db-credentials
+          key: database-password
+
+  resources:
+    limits:
+      cpu: "2"
+      memory: 2Gi
+    requests:
+      cpu: "500m"
+      memory: 1Gi
+  startupProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - /opt/eap/bin/readinessProbe.sh
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+    
+  livenessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - /opt/eap/bin/livenessProbe.sh
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - /opt/eap/bin/readinessProbe.sh
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # readinessProbe:
+  #   httpGet:
+  #     path: /health/ready
+  #     port: 9990
+  #   initialDelaySeconds: 20
+  #   periodSeconds: 10
+  #   timeoutSeconds: 5
+
+  # volumes:
+  #   - name: eap-stal-coolstore
+  #     configMap:
+  #       name: eap-stal-coolstore
+  #       defaultMode: 420
+
+  # volumeMounts:
+  #   - name: eap-stal-coolstore
+  #     mountPath: /opt/eap/standalone/configuration/standalone-openshift.xml
+  #     subPath: standalone-openshift.xml
+  #     readOnly: true

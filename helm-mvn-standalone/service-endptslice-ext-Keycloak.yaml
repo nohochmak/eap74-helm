@@ -1,0 +1,31 @@
+# Use this for localhost Keycloak for the oauth part of this demo
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-keycloak
+  namespace: multi-war-helm-mvn # Change to your EAP project namespace
+spec:
+  # No selector means OpenShift routes traffic to the matching EndpointSlice below
+  ports:
+    - name: keycloak
+      protocol: TCP
+      port: 8081       # Port used inside your EAP connection URL
+      targetPort: 8081 # Port listening on 127.0.0.1
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: external-keycloak-1
+  namespace: multi-war-helm-mvn # Must match the Service namespace
+  labels:
+    # Links this EndpointSlice directly to the Service above
+    kubernetes.io/service-name: external-keycloak
+addressType: IPv4
+ports:
+  - name: keycloak
+    protocol: TCP
+    port: 8081
+endpoints:
+  # this address is host machine (laptop) Gateway 
+  # Discovery using: ifconfig | grep "inet " | grep -v 127.0.0.1  - addresses:  
+      - "192.168.0.108"
