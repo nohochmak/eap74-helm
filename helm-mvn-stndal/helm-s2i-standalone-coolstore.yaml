@@ -31,17 +31,7 @@ build:
   env:
     - name: MAVEN_ARGS_APPEND
       value: "-Dcom.redhat.xpaas.repo.jbossorg"
-      # 4. Critical Cloud HA Environment variables required by standalone-full-ha
-    - name: WILDFLY_SERVER_CONFIGURATION
-      value: "standalone-openshift.xml"
-    - name: JGROUPS_PING_PROTOCOL
-      value: "openshift.KUBE_PING"
-    - name: KUBERNETES_NAMESPACE
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.namespace
 
-   
     # Credentials to connect to Nexus on OCP
     - name: NEXUS_OCP_PASSWORD
       valueFrom:
@@ -53,8 +43,6 @@ build:
         secretKeyRef:
           key: username
           name: nexus-credentials
-
-
 
   s2i:
     # 1. Instruct the S2I build engine to skip Galleon provisioning
