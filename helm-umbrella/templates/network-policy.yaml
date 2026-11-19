@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Values.runtime.name }}-netpol
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.runtime.name }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8080
+        - protocol: TCP
+          port: 8443
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ .Values.runtime.name }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.runtime.jgroups.pingPort }}
+        - protocol: TCP
+          port: {{ .Values.runtime.jgroups.fdSockPort }}
+  egress:
+    - {}

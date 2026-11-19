@@ -1,0 +1,8 @@
+apiVersion: v2
+name: multi-war-coolstore-umbrella
+version: 1.0.0
+description: Umbrella chart for Coolstore S2I build (eap74) and WildFly Operator runtime
+dependencies:
+  - name: eap74
+    version: "1.1.2"
+    repository: "https://jbossas.github.io/eap-charts/"

@@ -1,0 +1,6 @@
+dependencies:
+- name: eap74
+  repository: https://jbossas.github.io/eap-charts/
+  version: 1.1.2
+digest: sha256:72742fdcb19d364680aa8feff8defb87fba9c3db5f9f38383df6b8d27c6254e8
+generated: "2026-11-18T17:28:26.889962-07:00"

@@ -1,0 +1,100 @@
+# ==============================================================================
+# 1. Runtime Configuration (Consumed by templates/*.yaml)
+# ==============================================================================
+runtime:
+  name: multi-war-mvn
+  serviceAccountName: coolstoresa
+  applicationImage: multi-war-coolstore:latest
+  replicas: 1
+
+  secrets:
+    adminSecretName: eap-mgmt-admin
+    dbSecretName: eap-db-credentials
+
+  database:
+    serviceName: postgresql
+    externalIp: "192.168.0.108" # <-- Replace with your verified PostgreSQL IP
+    port: 5432
+
+  jgroups:
+    pingPort: 7600
+    fdSockPort: 57600
+
+  resources:
+    limits:
+      cpu: "2"
+      memory: 2Gi
+    requests:
+      cpu: "500m"
+      memory: 1Gi
+
+  probes:
+    startup:
+      initialDelaySeconds: 15
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 30
+    liveness:
+      initialDelaySeconds: 15
+      periodSeconds: 15
+      timeoutSeconds: 10
+      failureThreshold: 5
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+
+# ==============================================================================
+# 2. S2I Build Configuration (Passed directly to jboss-eap/eap74 subchart)
+# ==============================================================================
+eap74:
+  image:
+    tag: latest
+
+  build:
+    enabled: true
+    mode: s2i
+    uri: 'https://github.com/nohochmak/eap74-helm.git'
+    ref: main
+    contextDir: war-collector-coolstore
+
+    output:
+      kind: ImageStreamTag
+
+    env:
+      - name: MAVEN_ARGS_APPEND
+        value: "-Dcom.redhat.xpaas.repo.jbossorg"
+      - name: NEXUS_OCP_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: nexus-credentials
+      - name: NEXUS_OCP_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: nexus-credentials
+
+    s2i:
+      galleonEnabled: "false"
+      env:
+        - name: DISABLE_GALLEON
+          value: "true"
+        - name: EAP_ONLY_DEPLOYMENTS
+          value: "true"
+      version: latest
+      arch: amd64
+      jdk: '8'
+      amd64:
+        jdk8:
+          builderImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-openshift-rhel8
+          runtimeImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-runtime-openshift-rhel8
+        jdk11:
+          builderImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-openshift-rhel8
+          runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-runtime-openshift-rhel8
+
+    triggers: {}
+
+  deploy:
+    enabled: false

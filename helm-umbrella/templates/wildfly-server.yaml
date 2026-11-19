@@ -1,0 +1,74 @@
+apiVersion: wildfly.org/v1alpha1
+kind: WildFlyServer
+metadata:
+  name: {{ .Values.runtime.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  serviceAccountName: {{ .Values.runtime.serviceAccountName }}
+  applicationImage: {{ .Values.runtime.applicationImage }}
+  replicas: {{ .Values.runtime.replicas }}
+
+  env:
+    - name: DISABLE_BOOT_SCRIPT_INVOKER
+      value: "true"
+    - name: DISABLE_EMBEDDED_JMS_BROKER
+      value: "true"
+    - name: WILDFLY_SERVER_CONFIGURATION
+      value: "standalone-openshift.xml"
+    - name: JGROUPS_PING_PROTOCOL
+      value: "kubernetes.KUBE_PING"
+    - name: KUBERNETES_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: JAVA_OPTS_APPEND
+      value: "-Djboss.bind.address.private=0.0.0.0"
+    - name: PROBE_CURL_TIMEOUT
+      value: "5"
+    - name: ADMIN_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Values.runtime.secrets.adminSecretName }}
+          key: username
+    - name: ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Values.runtime.secrets.adminSecretName }}
+          key: password
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Values.runtime.secrets.dbSecretName }}
+          key: database-user
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Values.runtime.secrets.dbSecretName }}
+          key: database-password
+
+  resources:
+    {{- toYaml .Values.runtime.resources | nindent 4 }}
+
+  startupProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - /opt/eap/bin/readinessProbe.sh
+    {{- toYaml .Values.runtime.probes.startup | nindent 4 }}
+
+  livenessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - /opt/eap/bin/livenessProbe.sh
+    {{- toYaml .Values.runtime.probes.liveness | nindent 4 }}
+
+  readinessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - /opt/eap/bin/readinessProbe.sh
+    {{- toYaml .Values.runtime.probes.readiness | nindent 4 }}
