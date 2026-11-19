@@ -3,7 +3,19 @@ kind: ServiceAccount
 metadata:
   name: {{ .Values.runtime.serviceAccountName }}
   namespace: {{ .Release.Namespace }}
----
+
+# ---  
+# Explicit pod viewer
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: Role
+# metadata:
+#   name: pod-viewer
+# rules:
+# - apiGroups: [""]
+#   resources: ["pods"]
+#   verbs: ["get", "watch", "list"]
+---  
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
