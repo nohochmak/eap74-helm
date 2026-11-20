@@ -83,13 +83,15 @@ eap74:
           value: "true"
         - name: EAP_ONLY_DEPLOYMENTS
           value: "true"
-      version: latest
+      version: 7.4.26
       arch: amd64
       jdk: '8'
       amd64:
-        jdk8:
+        jdk8: 
           builderImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-openshift-rhel8
           runtimeImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-runtime-openshift-rhel8
+          # builderImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-openshift-rhel8
+          # runtimeImage: registry.redhat.io/jboss-eap-7/eap74-els-openjdk8-runtime-openshift-rhel8
         jdk11:
           builderImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-openshift-rhel8
           runtimeImage: registry.redhat.io/jboss-eap-7/eap74-openjdk11-runtime-openshift-rhel8
