@@ -35,6 +35,16 @@ spec:
         secretKeyRef:
           name: {{ .Values.runtime.secrets.adminSecretName }}
           key: password
+
+    # Database Parameters
+    - name: DB_HOST
+      value: "external-postgres-db"
+    - name: DB_PORT
+      value: "5432"
+    - name: DB_NAME
+      value: "postgresDB"
+
+
     - name: DB_USER
       valueFrom:
         secretKeyRef:
